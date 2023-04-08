@@ -41,15 +41,21 @@ def read_file_cached(blobpath: str) -> bytes:
     cache_path = os.path.join(cache_dir, cache_key)
     if os.path.exists(cache_path):
         with open(cache_path, "rb") as f:
-            return f.read()
+            try:
+                return f.read()
+            except:
+                pass
 
     contents = read_file(blobpath)
 
-    os.makedirs(cache_dir, exist_ok=True)
-    tmp_filename = cache_path + "." + str(uuid.uuid4()) + ".tmp"
-    with open(tmp_filename, "wb") as f:
-        f.write(contents)
-    os.rename(tmp_filename, cache_path)
+    try:
+        os.makedirs(cache_dir, exist_ok=True)
+        tmp_filename = cache_path + "." + str(uuid.uuid4()) + ".tmp"
+        with open(tmp_filename, "wb") as f:
+            f.write(contents)
+        os.rename(tmp_filename, cache_path)
+    except:
+        pass
 
     return contents
 
